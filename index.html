@@ -1,0 +1,790 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>林予的个人主页 · 模板示例</title>
+<meta name="description" content="个人主页模板示例，使用虚构资料展示个人介绍、经历、项目和联系方式。">
+<style>
+:root {
+  color-scheme: light;
+  --paper:#fff; --ink:#222326; --muted:#64666b; --line:#e8e9eb;
+  --surface:#f7f7f8; --button:#26272a; --focus:#5b5e66;
+  font-family: "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
+}
+* { box-sizing:border-box; }
+html { scroll-behavior:smooth; background:var(--paper); }
+body {
+  margin:0; overflow-x:clip; color:var(--ink); font-size:14px;
+  background:
+    radial-gradient(ellipse 58% 20% at 90% 12%, #f7e4ef, transparent 100%),
+    radial-gradient(ellipse 44% 16% at 7% 22%, #f8e5ef9e, transparent 100%),
+    radial-gradient(ellipse 49% 17% at 96% 41%, #e8ddf7d9, transparent 100%),
+    radial-gradient(ellipse 46% 14% at 0% 59%, #daefeaac, transparent 100%),
+    radial-gradient(ellipse 48% 17% at 96% 69%, #dceff8b5, transparent 100%),
+    radial-gradient(ellipse 56% 16% at 91% 94%, #dfe5faa6, transparent 100%),
+    radial-gradient(ellipse 34% 12% at 0% 100%, #ebdef5ad, transparent 100%),
+    linear-gradient(180deg, #fffafb 0%, #faf1f7 21%, #f8f4fc 40%, #f1f9fa 65%, #f3f5fc 84%, #f2effa 100%);
+}
+body:has(dialog[open]) { overflow:hidden; }
+a { color:inherit; text-decoration:none; }
+button { color:inherit; font:inherit; cursor:pointer; }
+a:focus-visible, button:focus-visible { outline:2px solid var(--focus); outline-offset:5px; }
+p { line-height:1.55; }
+.shell { width:min(1040px, calc(100% - 96px)); margin-inline:auto; }
+.header { position:sticky; top:0; z-index:2; display:flex; justify-content:center; padding:16px 18px 0; pointer-events:none; transition:transform .25s ease, opacity .2s ease; }
+.header.is-hidden:not(:has(:focus-visible)) { transform:translateY(-120%); opacity:0; }
+.header.is-hidden:not(:has(:focus-visible)) .bar { pointer-events:none; }
+.bar, .brand, nav { display:flex; align-items:center; }
+.bar {
+  width:max-content; max-width:100%; min-height:50px; padding:5px; gap:clamp(7px, 3vw, 29px);
+  border:1px solid #dadde280; border-radius:999px;
+  background:linear-gradient(115deg, #fff9, #f4f4f6a6);
+  -webkit-backdrop-filter:blur(22px) saturate(145%);
+  backdrop-filter:blur(22px) saturate(145%);
+  box-shadow:0 7px 25px #25273112, inset 0 1px 0 #fffc;
+  pointer-events:auto;
+}
+.brand { padding:7px 13px; border-radius:999px; background:#ffffffd9; font-size:13px; font-weight:700; white-space:nowrap; }
+nav { gap:clamp(2px, 1.2vw, 14px); padding-right:5px; font-size:12px; white-space:nowrap; }
+nav a { padding:8px clamp(8px, 1.3vw, 14px); border-radius:999px; color:var(--muted); }
+nav a:is(:hover, :focus-visible) { color:var(--ink); background:#ffffffb5; }
+.footer a:hover { text-decoration:underline; }
+#top, .section { scroll-margin-top:88px; }
+.hero { position:relative; isolation:isolate; display:grid; grid-template-columns:minmax(0, .77fr) minmax(0, 1.15fr); align-items:center; gap:clamp(24px, 5.5vw, 75px); padding:clamp(78px, 9vw, 122px) 0 clamp(95px, 11vw, 144px); min-height:630px; }
+h1, h2, h3, p { margin:0; }
+.hero-copy { max-width:280px; }
+.hero-copy h1 { font-size:clamp(32px, 4.5vw, 54px); font-weight:740; line-height:1.1; letter-spacing:-.045em; }
+.hero-copy h1 span { color:#766586; font-size:.62em; font-weight:560; letter-spacing:0; }
+.hero-info { display:grid; grid-template-columns:max-content minmax(0, 1fr); align-items:baseline; gap:8px 12px; margin:16px 0 0; font-size:13px; line-height:1.55; }
+.hero-info dt { color:var(--muted); font-size:12px; }
+.hero-info dd { margin:0; font-variant-numeric:tabular-nums; }
+.hero-info dd:first-of-type { font-weight:650; }
+.hero-visual { position:relative; min-height:clamp(390px, 43vw, 530px); display:grid; place-items:center; }
+.hero-visual::before { content:""; position:absolute; z-index:-1; inset:8% -8%; border:1px solid #eacfe28c; border-radius:50%; transform:rotate(-28deg); pointer-events:none; }
+.portrait { position:relative; width:min(63%, 350px); aspect-ratio:2 / 3; margin-top:7%; overflow:hidden; display:grid; place-items:center; background:#e6dff0; border-radius:50% 50% 7% 7% / 32% 32% 5% 5%; border:clamp(3px, .55vw, 7px) solid #fff7f1; box-shadow:0 25px 55px #a2729c36; }
+.portrait img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; object-position:50% 35%; }
+.section { padding:clamp(76px, 9.5vw, 128px) 0; }
+
+h2 { font-size:clamp(21px, 2.8vw, 32px); line-height:1.22; letter-spacing:-.035em; margin-bottom:clamp(28px, 4vw, 48px); }
+#experience { padding-block:clamp(60px, 9vw, 110px); }
+#experience > h2 { margin-bottom:clamp(30px, 5vw, 62px); font-size:clamp(20px, 2.5vw, 28px); font-weight:620; letter-spacing:-.035em; }
+.experience-layout { display:grid; grid-template-columns:minmax(175px, .8fr) minmax(0, 2fr); gap:clamp(24px, 5vw, 68px); align-items:stretch; }
+.experience-list { display:grid; align-content:start; gap:6px; border-left:1px solid var(--line); }
+.experience-choice { display:grid; gap:4px; min-width:0; min-height:82px; align-content:center; padding:14px 18px; border:0; border-left:2px solid transparent; background:transparent; text-align:left; }
+.experience-choice:hover { background:#eee7f587; }
+.experience-choice[aria-pressed="true"] { border-left-color:var(--button); background:#eee8f399; border-radius:0 10px 10px 0; }
+.experience-choice:focus-visible { outline-offset:2px; }
+.experience-choice strong { font-size:13px; font-weight:650; }
+.experience-choice small { font-size:11px; color:var(--muted); }
+.experience-period { color:var(--muted); font-size:10px; font-variant-numeric:tabular-nums; }
+.experience-panel { min-width:0; min-height:330px; padding:clamp(26px, 4.7vw, 56px); border:1px solid var(--line); border-radius:21px; background:#ffffff85; }
+.experience-content { animation:experience-in .3s ease-out; }
+@keyframes experience-in { from { opacity:.35; transform:translateY(6px); } to { opacity:1; transform:translateY(0); } }
+.experience-panel-header { display:flex; flex-wrap:wrap; align-items:flex-start; justify-content:space-between; gap:12px 18px; }
+.experience-panel h3 { font-size:clamp(16px, 1.75vw, 20px); font-weight:620; }
+.experience-company { margin-top:4px; font-size:12px; color:var(--muted); }
+.experience-date { display:inline-block; padding:5px 10px; border-radius:999px; background:var(--surface); color:var(--muted); font-size:10px; white-space:nowrap; }
+.experience-summary { margin-top:24px; font-size:12px; color:var(--muted); }
+.experience-details { padding-left:17px; margin:11px 0 22px; color:var(--muted); font-size:13px; line-height:1.55; }
+.experience-details li + li { margin-top:9px; }
+.experience-details li::marker { color:#797b80; }
+.experience-panel .text-button { font-size:12px; }
+.capability-bubbles { position:absolute; inset:0; pointer-events:none; }
+.capability-bubble {
+  --size:clamp(106px, 26%, 144px); --tint:#edb9d7; --halo:#f9e4f1ce;
+  position:absolute; display:grid; align-content:center; justify-items:center; gap:5px;
+  width:var(--size); aspect-ratio:1; padding:6px; border-radius:50%;
+  border:0; color:var(--ink);
+  background:radial-gradient(circle at 43% 39%, var(--tint), var(--halo) 47%, transparent 70%);
+  pointer-events:auto; transition:transform .23s ease;
+}
+.capability-bubble::after { content:""; position:absolute; inset:-7px; border-radius:inherit; }
+.capability-bubble:nth-child(1) { top:1%; left:0; }
+.capability-bubble:nth-child(2) { --size:clamp(101px, 23%, 126px); --tint:#c4c8f4; --halo:#e5e8fcce; top:8%; right:0; }
+.capability-bubble:nth-child(3) { --size:clamp(112px, 29%, 158px); --tint:#bfe1a7; --halo:#e3f2d6ce; bottom:-3%; right:0; }
+.capability-bubble:nth-child(4) { --size:clamp(98px, 22%, 119px); --tint:#a6dbd2; --halo:#d6f0eace; bottom:13%; left:-2%; }
+.capability-bubble strong { font-size:12px; font-weight:650; }
+.capability-summary { position:absolute; inset-inline:4px; top:54%; font-size:10px; line-height:1.35; text-wrap:balance; opacity:0; transform:translateY(3px); transition:opacity .2s ease, transform .2s ease; }
+.capability-bubble:is(:focus-visible, [aria-pressed="true"]) { z-index:1; transform:scale(1.08); }
+.capability-bubble:is(:focus-visible, [aria-pressed="true"]) strong { transform:translateY(-8px); }
+.capability-bubble:is(:focus-visible, [aria-pressed="true"]) .capability-summary { opacity:1; transform:none; }
+@media (hover:hover) and (pointer:fine) {
+  .capability-bubble:hover { z-index:1; transform:scale(1.08); }
+  .capability-bubble:hover strong { transform:translateY(-8px); }
+  .capability-bubble:hover .capability-summary { opacity:1; transform:none; }
+}
+.project-stage { overflow:hidden; border:1px solid var(--line); border-radius:24px; background:linear-gradient(140deg, #eaf1f580, #dfedf3a8); }
+.project-fan { display:flex; justify-content:center; align-items:center; min-height:450px; padding:52px clamp(34px, 6vw, 82px); }
+.project-card, .project-dialog {
+  --accent:#e098c5; --light:#ffe3f4; --edge:#d486b7;
+}
+.project-card {
+  --angle:-13deg; --drop:23px;
+  position:relative; display:flex; flex:1 1 0; flex-direction:column; gap:8px; isolation:isolate;
+  min-width:0; max-width:222px; min-height:300px;
+  padding:16px 16px 0; overflow:hidden; text-align:left;
+  color:#14231e; border:2px solid #ffffffdb; border-radius:22px;
+  background:radial-gradient(ellipse at 53% 36%, var(--accent), transparent 66%),
+             linear-gradient(150deg, #ffffff86, transparent 64%), var(--light);
+  box-shadow:0 17px 30px #3c53642d, inset 0 1px 1px white;
+  transform:translateY(var(--drop)) rotate(var(--angle));
+  transition:transform .24s ease, box-shadow .24s ease;
+}
+.project-card::before {
+  content:""; position:absolute; z-index:-1; pointer-events:none;
+  top:31%; left:-22%; width:151%; height:94%;
+  border-radius:50% 55% 0 0; transform:rotate(-17deg);
+  background:linear-gradient(145deg, #ffffff59, #ffffff05 69%);
+}
+.project-card + .project-card { margin-left:-9px; }
+.project-newsletter { --accent:#879cf5; --light:#e4e9ff; --edge:#a5b3f6; --angle:-5deg; --drop:-16px; }
+.project-checklist { --accent:#94da60; --light:#e8f9d9; --edge:#b1ea8f; --angle:5deg; --drop:-17px; }
+.project-walk { --accent:#69cfcb; --light:#daf5ee; --edge:#8edcd6; --angle:13deg; --drop:18px; }
+.project-card:is(:hover, :focus-visible) { z-index:1; transform:translateY(calc(var(--drop) - 17px)) rotate(calc(var(--angle) * .45)); box-shadow:0 22px 40px #425c4644; }
+.project-stage :focus-visible { outline:2px solid var(--focus); outline-offset:4px; }
+.project-category { align-self:flex-start; padding:4px 10px; border-radius:999px; background:#ffffffa6; font-size:11px; font-weight:650; }
+.project-icon { display:block; align-self:center; width:min(96%, 125px); height:auto; aspect-ratio:1; object-fit:contain; pointer-events:none; }
+.project-summary { margin-bottom:10px; color:#454a50; font-size:11px; line-height:1.5; }
+.project-title { margin-top:auto; margin-bottom:3px; max-width:12em; font-size:clamp(13px, 1.45vw, 17px); line-height:1.35; overflow-wrap:anywhere; }
+.project-footer { display:flex; align-items:center; justify-content:center; gap:9px; margin:0 -16px; padding:10px 14px; border-radius:15px 15px 0 0; background:linear-gradient(115deg, color-mix(in srgb, var(--edge) 46%, #333133), color-mix(in srgb, var(--edge) 55%, #31323b)); color:#fff; font-size:10px; }
+.project-arrow { font-size:14px; }
+.case-section h3, .case-item h3 { font-size:15px; }
+.text-button { padding:0; border:0; background:transparent; color:var(--ink); text-decoration:underline; text-underline-offset:4px; font-size:12px; }
+.contact { position:relative; padding-block:clamp(64px, 9vw, 110px) clamp(86px, 12vw, 155px); }
+.contact h2 { margin-bottom:clamp(48px, 8vw, 96px); font-weight:600; }
+.contact-links { display:grid; justify-items:center; gap:23px; text-align:center; }
+.contact-email { max-width:100%; font-size:clamp(20px, 5.5vw, 44px); font-weight:300; letter-spacing:-.025em; overflow-wrap:anywhere; }
+.contact-email:hover { text-decoration:underline; text-underline-offset:.22em; }
+.contact-actions { display:flex; justify-content:center; flex-wrap:wrap; gap:12px; }
+.contact-actions .text-button { color:var(--muted); font-size:11px; }
+.footer { display:flex; justify-content:space-between; padding:25px 0 32px; font-size:11px; color:var(--muted); }
+dialog { position:fixed; inset:0; width:100%; height:100%; max-width:none; max-height:none; margin:0; padding:0; border:0; overflow:hidden; background:transparent; color:var(--ink); isolation:isolate; }
+dialog[open] { display:grid; place-items:center; }
+dialog::backdrop { background:#22232620; transition:opacity .36s ease; }
+dialog.is-closing::backdrop { opacity:0; }
+.dialog-panel { --dialog-inset:clamp(22px, 5vw, 48px); position:relative; isolation:isolate; width:min(760px, calc(100% - 64px)); height:min(76dvh, 650px); border-radius:24px; }
+.dialog-surface { position:absolute; inset:0; z-index:-1; border-radius:inherit; background:radial-gradient(ellipse at 17% 53%, color-mix(in srgb, var(--accent) 24%, white), transparent 76%), linear-gradient(150deg, #fff, color-mix(in srgb, var(--light) 46%, white)); box-shadow:0 22px 65px #22232626; pointer-events:none; }
+.dialog-scroll { height:100%; overflow:auto; overscroll-behavior:contain; border-radius:inherit; scrollbar-width:none; }
+.dialog-scroll::-webkit-scrollbar { display:none; }
+.dialog-scroll:focus-visible { outline:2px solid var(--focus); outline-offset:-2px; }
+@media (prefers-reduced-motion:no-preference) {
+  .reveal > * {
+    transition:opacity .68s ease, transform .82s cubic-bezier(.2,.7,.22,1);
+  }
+  .reveal > :nth-child(2) { transition-delay:90ms; }
+  .reveal.is-pending:not(:focus-within) > * { opacity:0; transform:translateY(30px); transition:none; }
+  .reveal:focus-within > * { transition:none; }
+}
+.dialog-header {
+  position:sticky; top:0; z-index:1; display:flex; align-items:center; justify-content:flex-end;
+  padding:6px var(--dialog-inset); background:#ffffff5c;
+  -webkit-backdrop-filter:blur(18px) saturate(130%);
+  backdrop-filter:blur(18px) saturate(130%);
+}
+.dialog-header button { border:0; border-radius:50%; width:44px; height:44px; background:#ffffffa8; font-size:22px; }
+.dialog-header button:hover { background:#fff; }
+.dialog-content { padding:clamp(14px, 2.6vw, 30px) var(--dialog-inset) clamp(38px, 6vw, 62px); }
+.dialog-content > p { color:#555962; margin-bottom:9px; font-size:12px; line-height:1.4; }
+.dialog-content h2 { margin-bottom:clamp(25px, 4vw, 43px); font-size:clamp(22px, 3vw, 31px); text-wrap:balance; }
+.case-section + .case-section { margin-top:clamp(22px, 3.5vw, 34px); }
+.case-section h3, .case-item h3 { line-height:1.35; font-weight:680; }
+.case-section p, .case-item p { margin-top:7px; }
+.case-section p + p, .case-item p + p { margin-top:10px; }
+.case-section p, .case-item p, .case-bullets, .experience-details li {
+  text-align:justify; text-justify:inter-ideograph;
+}
+.case-items { display:grid; gap:14px; margin-top:26px; }
+.case-item { padding:clamp(15px, 3vw, 23px); background:#ffffff70; border-radius:13px; }
+.case-metrics { display:grid; grid-template-columns:repeat(2, minmax(0, 1fr)); gap:10px; margin:12px 0; }
+.case-metrics div { display:flex; flex-direction:column-reverse; gap:4px; padding:clamp(10px, 2vw, 16px); background:#ffffff85; border-radius:11px; }
+.case-metrics dt { color:#555962; font-size:12px; }
+.case-metrics dd { margin:0; font-size:clamp(19px, 3vw, 28px); letter-spacing:-.03em; font-weight:670; }
+.case-figures { display:grid; gap:12px; margin-top:14px; }
+.case-figures-gallery { grid-template-columns:repeat(auto-fit, minmax(min(125px, 46%), 1fr)); }
+.case-figures figure { margin:0; min-width:0; }
+.case-figures img { display:block; width:100%; height:auto; border-radius:8px; background:#fff; }
+.case-figures-gallery img { aspect-ratio:3 / 4; object-fit:contain; }
+.case-figure-compact { max-width:380px; }
+.case-figures figcaption { margin-top:6px; color:#555962; font-size:11px; }
+.case-bullets { margin:8px 0 0; padding-inline-start:1.28em; line-height:1.55; }
+.case-bullets li + li { margin-top:8px; }
+.external-links { display:flex; flex-wrap:wrap; gap:8px 16px; margin-top:12px; }
+@media (max-width:760px) {
+  .project-fan { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:14px; min-height:0; padding:22px 17px; }
+  .project-card, .project-card:is(:hover, :focus-visible) { max-width:none; min-height:245px; transform:none; }
+  .project-card + .project-card { margin-left:0; }
+}
+@media (max-width:340px) {
+  .project-fan { grid-template-columns:1fr; }
+}
+@media (max-width:650px) {
+  .shell { width:calc(100% - 36px); }
+  .dialog-panel { width:calc(100% - 32px); height:82dvh; border-radius:18px; }
+  .header { padding-top:10px; }
+  .bar { min-height:44px; }
+  .hero { grid-template-columns:1fr; gap:35px; padding:62px 0 66px; }
+  .hero-visual { width:min(100%, 440px); min-height:clamp(322px, 96vw, 440px); margin-inline:auto; }
+  .portrait { width:min(62%, 245px); }
+  .section { padding:60px 0 66px; }
+  .contact { padding-bottom:92px; }
+  .experience-layout { grid-template-columns:1fr; gap:18px; }
+  .experience-list { grid-template-columns:repeat(2,minmax(0,1fr)); gap:6px; border-left:0; }
+  .experience-choice { padding:10px 9px; }
+  .experience-panel { min-height:0; padding:24px 20px 28px; }
+}
+@media (prefers-reduced-motion:reduce) {
+  html { scroll-behavior:auto; }
+  .header, .project-card, .capability-bubble, .capability-summary { transition:none; }
+  .experience-content { animation:none; }
+  dialog::backdrop { transition:none; }
+}
+
+.demo-label { margin-top:12px; color:#6c5977; font-size:11px; }
+.hero-summary { margin-top:14px; line-height:1.65; }
+.experience-content .external-links { margin-top:12px; }
+@media (max-width:650px) { .hero-visual::before { inset-inline:3%; } }
+</style>
+
+</head>
+<body>
+<header class="header"><div class="shell bar">
+  <a class="brand" href="#top">信息</a>
+  <nav aria-label="主导航"><a href="#experience">经历</a><a href="#projects">项目</a><a href="#contact">联系 <span aria-hidden="true">↗</span></a></nav>
+</div></header>
+<main id="top" class="shell">
+<section class="hero" aria-labelledby="intro">
+  <div class="hero-copy">
+    <h1 id="intro">林予 <span>Lin Yu</span></h1>
+    <p class="demo-label">模板示例 · 虚构资料</p>
+    <p class="hero-summary">我做内容、办活动，也记录日常里值得停下来看的小事。</p>
+    <dl class="hero-info">
+      <dt>方向</dt><dd>内容策划与社区运营</dd>
+      <dt>教育经历</dt><dd>传播学本科</dd>
+      <dt>现居城市</dt><dd>杭州</dd>
+    </dl>
+  </div>
+  <div class="hero-visual">
+    <div class="portrait">
+      <img src="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20480%20720%22%3E%0A%3Cdefs%3E%3ClinearGradient%20id%3D%22a%22%20x1%3D%220%22%20x2%3D%221%22%20y2%3D%221%22%20gradientUnits%3D%22objectBoundingBox%22%3E%0A%3Cstop%20stop-color%3D%22%23fae4d9%22%2F%3E%3Cstop%20offset%3D%22.55%22%20stop-color%3D%22%23e7d7ed%22%2F%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22%23c7dce1%22%2F%3E%0A%3C%2FlinearGradient%3E%3C%2Fdefs%3E%0A%3Cpath%20fill%3D%22url%28%23a%29%22%20d%3D%22M0%200h480v720H0z%22%2F%3E%0A%3Ccircle%20cx%3D%22333%22%20cy%3D%22197%22%20r%3D%22172%22%20fill%3D%22%23fff%22%20opacity%3D%22.27%22%2F%3E%0A%3Ccircle%20cx%3D%22133%22%20cy%3D%22550%22%20r%3D%22260%22%20fill%3D%22%238176aa%22%20opacity%3D%22.13%22%2F%3E%0A%3Cpath%20d%3D%22M-50%20483Q193%20170%20506%20353M-70%20566Q176%20281%20526%20450%22%20fill%3D%22none%22%20stroke%3D%22%23fff%22%20opacity%3D%22.62%22%20stroke-width%3D%222%22%2F%3E%0A%3Ctext%20x%3D%22240%22%20y%3D%22383%22%20text-anchor%3D%22middle%22%20font-family%3D%22Georgia%2C%20serif%22%20font-style%3D%22italic%22%20font-size%3D%22137%22%20fill%3D%22%23554a64%22%3EL%20Y%3C%2Ftext%3E%0A%3C%2Fsvg%3E" alt="姓名首字母构成的照片占位图" width="480" height="720" fetchpriority="high">
+    </div>
+    <div id="capability-list" class="capability-bubbles" role="group" aria-label="能力模型"></div>
+  </div>
+</section>
+<section id="experience" class="section">
+  <h2>个人经历</h2>
+  <div class="experience-layout">
+    <div id="experience-list" class="experience-list" role="group" aria-label="选择一段经历"></div>
+    <article id="experience-panel" class="experience-panel" aria-labelledby="experience-role" aria-live="polite"></article>
+  </div>
+</section>
+<section id="projects" class="section">
+  <h2>作品与项目</h2>
+  <div class="project-stage">
+    <div id="project-list" class="project-fan"></div>
+  </div>
+</section>
+<section id="contact" class="section contact" aria-labelledby="contact-title">
+  <h2 id="contact-title">联系方式</h2>
+  <div id="contact-links" class="contact-links"></div>
+</section>
+</main>
+<footer class="shell footer"><span>林予 · 模板示例</span><a href="personal-homepage-skill.zip" download>下载模板 ZIP ↓</a><a href="#top">回到顶部 ↑</a></footer>
+<dialog id="project-dialog" aria-labelledby="project-title">
+  <div class="dialog-panel">
+    <div class="dialog-surface" aria-hidden="true"></div>
+    <div class="dialog-scroll" tabindex="0" aria-label="项目内容">
+      <div class="dialog-header"><button id="close-project" type="button" aria-label="关闭项目详情" autofocus>×</button></div>
+      <article id="project-content" class="dialog-content"></article>
+    </div>
+  </div>
+</dialog>
+<script>
+const portfolio = {
+  "email": "linyu@example.com",
+  "experience": [
+    {
+      "dates": "2024.09 至今",
+      "company": "栖页文化工作室",
+      "role": "内容与活动运营",
+      "summary": "策划读书会和月度通讯，负责从选题、活动发布到结束后的复盘。",
+      "details": [
+        "梳理活动报名流程，把时间、地点和参加须知集中在同一个页面。",
+        "采访读者与分享嘉宾，把现场讨论整理为活动回顾。"
+      ],
+      "links": [
+        {
+          "label": "查看读书会案例",
+          "url": "#projects"
+        }
+      ]
+    },
+    {
+      "dates": "2023.06–2024.08",
+      "company": "沿河城市观察小组",
+      "role": "编辑与志愿者",
+      "summary": "和团队一起策划周末散步路线，整理街区故事和路线资料。",
+      "details": [
+        "实地走访路线，记录步行时间、开放时段和雨天备选地点。",
+        "撰写路线介绍，为第一次加入活动的人准备出行说明。"
+      ]
+    }
+  ],
+  "capabilities": [
+    {
+      "name": "内容策划",
+      "summary": "从选题到写作"
+    },
+    {
+      "name": "活动运营",
+      "summary": "让参与更方便"
+    },
+    {
+      "name": "资料整理",
+      "summary": "把信息写清楚"
+    },
+    {
+      "name": "项目协作",
+      "summary": "从想法到交付"
+    }
+  ],
+  "projects": [
+    {
+      "id": "reading",
+      "name": "周末读书会报名页",
+      "category": "活动运营",
+      "cardSummary": "把报名说明、须知和确认流程放到一页",
+      "context": "社区活动 · 报名流程优化",
+      "sections": [
+        {
+          "title": "项目背景",
+          "paragraphs": [
+            "读书会原先通过群聊收集报名。时间和地点常被新消息刷走，志愿者需要反复回答一样的问题。"
+          ]
+        },
+        {
+          "title": "我做了什么",
+          "paragraphs": [
+            "把活动信息、报名表和确认邮件串起来，统一报名入口，并给志愿者整理了活动当天的检查清单。"
+          ],
+          "figures": [
+            {
+              "src": "data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20680%20310%22%3E%0A%3Crect%20width%3D%22680%22%20height%3D%22310%22%20rx%3D%2218%22%20fill%3D%22%23fbf7fb%22%2F%3E%0A%3Ctext%20x%3D%2242%22%20y%3D%2264%22%20fill%3D%22%23352b40%22%20font-size%3D%2227%22%20font-family%3D%22sans-serif%22%3E%E8%AF%BB%E4%B9%A6%E4%BC%9A%E6%8A%A5%E5%90%8D%E6%B5%81%E7%A8%8B%3C%2Ftext%3E%0A%3Cg%20font-size%3D%2221%22%20font-family%3D%22sans-serif%22%20text-anchor%3D%22middle%22%20fill%3D%22%23352b40%22%3E%0A%3Crect%20x%3D%2242%22%20y%3D%22117%22%20width%3D%22170%22%20height%3D%2288%22%20rx%3D%2214%22%20fill%3D%22%23f3deef%22%2F%3E%0A%3Crect%20x%3D%22255%22%20y%3D%22117%22%20width%3D%22170%22%20height%3D%2288%22%20rx%3D%2214%22%20fill%3D%22%23e8e0f5%22%2F%3E%0A%3Crect%20x%3D%22468%22%20y%3D%22117%22%20width%3D%22170%22%20height%3D%2288%22%20rx%3D%2214%22%20fill%3D%22%23e1eee8%22%2F%3E%0A%3Ctext%20x%3D%22127%22%20y%3D%22168%22%3E%E6%9F%A5%E7%9C%8B%E6%B4%BB%E5%8A%A8%E4%BF%A1%E6%81%AF%3C%2Ftext%3E%3Ctext%20x%3D%22340%22%20y%3D%22168%22%3E%E5%A1%AB%E5%86%99%E6%8A%A5%E5%90%8D%E8%A1%A8%3C%2Ftext%3E%3Ctext%20x%3D%22553%22%20y%3D%22168%22%3E%E6%94%B6%E5%88%B0%E7%A1%AE%E8%AE%A4%E9%82%AE%E4%BB%B6%3C%2Ftext%3E%0A%3C%2Fg%3E%0A%3Cpath%20d%3D%22M219%20161h28m-9-8%209%208-9%208m194-8h28m-9-8%209%208-9%208%22%20fill%3D%22none%22%20stroke%3D%22%235f5672%22%20stroke-width%3D%222%22%2F%3E%0A%3Ctext%20x%3D%2242%22%20y%3D%22263%22%20fill%3D%22%23655971%22%20font-size%3D%2216%22%20font-family%3D%22sans-serif%22%3E%E7%A4%BA%E4%BE%8B%E6%B5%81%E7%A8%8B%E5%9B%BE%3C%2Ftext%3E%0A%3C%2Fsvg%3E",
+              "alt": "查看活动信息、填写报名表、收到确认邮件",
+              "caption": "示例图 · 报名流程"
+            }
+          ]
+        },
+        {
+          "title": "结果",
+          "paragraphs": [
+            "报名信息可以集中核对，参加者也能在一处找到完整的参与说明。"
+          ],
+          "links": [
+            {
+              "label": "示例外链",
+              "url": "https://example.com/"
+            }
+          ]
+        }
+      ],
+      "icon": "data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20128%20128%22%3E%3Cg%20fill%3D%22none%22%20stroke%3D%22white%22%20stroke-width%3D%223.4%22%20stroke-linejoin%3D%22round%22%20stroke-linecap%3D%22round%22%3E%3Crect%20x%3D%2234%22%20y%3D%2224%22%20width%3D%2260%22%20height%3D%2280%22%20rx%3D%2210%22%2F%3E%3Cpath%20d%3D%22m46%2053%205%205%2010-11m7%207h14M46%2073h36M46%2086h25%22%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E"
+    },
+    {
+      "id": "newsletter",
+      "name": "《页边》月度通讯",
+      "category": "内容策划",
+      "cardSummary": "把月度选题、读者来信和活动预告编成一期",
+      "context": "个人写作 · 电子通讯",
+      "sections": [
+        {
+          "title": "写作方向",
+          "paragraphs": [
+            "每月选一篇长文、一条读者来信和一个周末活动，做成十分钟能读完的一封信。"
+          ]
+        },
+        {
+          "title": "我的工作",
+          "bullets": [
+            "编辑来信并跟读者核对署名。",
+            "用固定栏目组织内容，保留一期可以自由尝试的新选题。"
+          ]
+        }
+      ],
+      "icon": "data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20128%20128%22%3E%3Cg%20fill%3D%22none%22%20stroke%3D%22white%22%20stroke-width%3D%223.4%22%20stroke-linejoin%3D%22round%22%20stroke-linecap%3D%22round%22%3E%3Cpath%20d%3D%22M24%2053%2064%2028l40%2025v43H24zM24%2055l40%2025%2040-25M25%2095l27-24m24%200%2027%2024%22%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E"
+    },
+    {
+      "id": "checklist",
+      "name": "活动筹备清单",
+      "category": "协作工具",
+      "cardSummary": "把分散在聊天里的待办按时间顺序整理",
+      "context": "协作实践 · 志愿者工具",
+      "sections": [
+        {
+          "title": "怎么用",
+          "paragraphs": [
+            "把场地、物料、通知和现场分工拆到活动前一周、前一天和当天三个时间段。"
+          ]
+        },
+        {
+          "title": "一次小改动",
+          "paragraphs": [
+            "新增负责人和完成状态，交接的人打开一页就知道下一步该做什么。"
+          ]
+        }
+      ],
+      "icon": "data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20128%20128%22%3E%3Cg%20fill%3D%22none%22%20stroke%3D%22white%22%20stroke-width%3D%223.4%22%20stroke-linejoin%3D%22round%22%20stroke-linecap%3D%22round%22%3E%3Cpath%20d%3D%22M28%2035h72v58H28zM41%2049h45M41%2063h31M41%2077h40M59%2023v12M59%2093v12%22%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E"
+    },
+    {
+      "id": "walk",
+      "name": "沿河散步地图",
+      "category": "兴趣项目",
+      "cardSummary": "记录三条下班后就能走的城市路线",
+      "context": "个人兴趣 · 城市记录",
+      "sections": [
+        {
+          "title": "想记录什么",
+          "paragraphs": [
+            "不赶景点，从地铁出来慢慢走，顺手记下好找的长椅、小书店和河边的安静路段。"
+          ]
+        },
+        {
+          "title": "每条路线包含什么",
+          "bullets": [
+            "起点、终点和预计步行时间。",
+            "适合停留的位置，以及下雨时可换的路段。"
+          ]
+        }
+      ],
+      "icon": "data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20128%20128%22%3E%3Cg%20fill%3D%22none%22%20stroke%3D%22white%22%20stroke-width%3D%223.4%22%20stroke-linejoin%3D%22round%22%20stroke-linecap%3D%22round%22%3E%3Crect%20x%3D%2223%22%20y%3D%2231%22%20width%3D%2282%22%20height%3D%2266%22%20rx%3D%2210%22%2F%3E%3Ccircle%20cx%3D%2248%22%20cy%3D%2251%22%20r%3D%227%22%2F%3E%3Cpath%20d%3D%22m30%2082%2023-16%2014%2010%2013-16%2017%2022%22%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E"
+    }
+  ]
+};
+
+const siteHeader = document.querySelector(".header");
+let lastScrollY = Math.max(0, window.scrollY);
+let scrollTravel = 0;
+
+window.addEventListener("scroll", () => {
+  const maxScrollY = Math.max(0, document.documentElement.scrollHeight - window.innerHeight);
+  const scrollY = Math.min(maxScrollY, Math.max(0, window.scrollY));
+  const delta = scrollY - lastScrollY;
+  lastScrollY = scrollY;
+
+  if (scrollY <= 4) {
+    siteHeader.classList.remove("is-hidden");
+    scrollTravel = 0;
+    return;
+  }
+  if (!delta) return;
+
+  // Ignore small position changes until the scroll direction is clear.
+  scrollTravel = Math.sign(delta) === Math.sign(scrollTravel) ? scrollTravel + delta : delta;
+  if (Math.abs(scrollTravel) >= 8) {
+    siteHeader.classList.toggle("is-hidden", scrollTravel > 0);
+    scrollTravel = 0;
+  }
+}, {passive: true});
+
+window.addEventListener("pointermove", event => {
+  if (event.pointerType === "mouse" && event.clientY <= 14) {
+    siteHeader.classList.remove("is-hidden");
+    scrollTravel = 0;
+  }
+}, {passive: true});
+
+const dialog = document.querySelector("#project-dialog");
+const projectContent = document.querySelector("#project-content");
+const dialogSurface = dialog.querySelector(".dialog-surface");
+const dialogScroll = dialog.querySelector(".dialog-scroll");
+const dialogHeader = dialog.querySelector(".dialog-header");
+let projectTrigger;
+let detailAnimations = [];
+let closingProject = false;
+
+function element(tag, className, text) {
+  const node = document.createElement(tag);
+  if (className) node.className = className;
+  if (text) node.textContent = text;
+  return node;
+}
+
+function appendExternalLinks(container, links) {
+  if (!links?.length) return;
+  const row = element("div", "external-links");
+  for (const item of links) {
+    const link = element("a", "text-button", item.label + " ↗");
+    link.href = item.url;
+    if (!item.url.startsWith("#")) {
+      link.target = "_blank";
+      link.rel = "noopener noreferrer";
+    }
+    row.append(link);
+  }
+  container.append(row);
+}
+
+function renderCaseSection(data, className) {
+  const section = element("section", className);
+  section.append(element("h3", "", data.title));
+  for (const paragraph of data.paragraphs ?? []) section.append(element("p", "", paragraph));
+  if (data.metrics?.length) {
+    const metrics = element("dl", "case-metrics");
+    for (const {value, label} of data.metrics) {
+      const metric = element("div");
+      metric.append(element("dt", "", label), element("dd", "", value));
+      metrics.append(metric);
+    }
+    section.append(metrics);
+  }
+  if (data.bullets?.length) {
+    const list = element("ul", "case-bullets");
+    for (const line of data.bullets) list.append(element("li", "", line));
+    section.append(list);
+  }
+  if (data.figures?.length) {
+    const figures = element("div", data.figures.length > 1 ? "case-figures case-figures-gallery" : "case-figures");
+    for (const {src, alt, caption, compact} of data.figures) {
+      const figure = element("figure", compact ? "case-figure-compact" : "");
+      const image = element("img");
+      image.alt = alt;
+      image.loading = "lazy";
+      image.decoding = "async";
+      image.src = src;
+      figure.append(image);
+      if (caption) figure.append(element("figcaption", "", caption));
+      figures.append(figure);
+    }
+    section.append(figures);
+  }
+  appendExternalLinks(section, data.links);
+  return section;
+}
+
+function cardGeometry(trigger) {
+  const bounds = trigger.getBoundingClientRect();
+  const styles = getComputedStyle(trigger);
+  const transform = styles.transform === "none" ? new DOMMatrixReadOnly() :
+    new DOMMatrixReadOnly(styles.transform);
+  return {
+    x: bounds.left + bounds.width / 2,
+    y: bounds.top + bounds.height / 2,
+    width: trigger.offsetWidth,
+    height: trigger.offsetHeight,
+    angle: Math.atan2(transform.b, transform.a),
+    radius: parseFloat(styles.borderRadius) || 0
+  };
+}
+
+function cardFrame(card, panel) {
+  const x = card.x - (panel.left + panel.width / 2);
+  const y = card.y - (panel.top + panel.height / 2);
+  const width = card.width / panel.width;
+  const height = card.height / panel.height;
+  return {
+    transform: `translate(${x}px, ${y}px) rotate(${card.angle}rad) scale(${width}, ${height})`,
+    borderRadius: `${card.radius / width}px / ${card.radius / height}px`
+  };
+}
+
+function openProject(id, trigger) {
+  const project = portfolio.projects.find(item => item.id === id);
+  if (dialog.open) return;
+  projectTrigger = trigger;
+  const origin = cardGeometry(trigger);
+  dialog.className = "project-dialog project-" + project.id;
+  const heading = element("h2", "", project.name);
+  heading.id = "project-title";
+  projectContent.replaceChildren(element("p", "", project.context), heading);
+
+  for (const section of project.sections) {
+    projectContent.append(renderCaseSection(section, "case-section"));
+  }
+  if (project.items) {
+    const items = element("div", "case-items");
+    for (const item of project.items) items.append(renderCaseSection(item, "case-item"));
+    projectContent.append(items);
+  }
+
+  dialog.showModal();
+  dialogScroll.scrollTop = 0;
+  if (matchMedia("(prefers-reduced-motion: reduce)").matches ||
+      typeof dialogSurface.animate !== "function") return;
+
+  const panel = dialog.querySelector(".dialog-panel").getBoundingClientRect();
+  detailAnimations = [
+    dialogSurface.animate([
+      cardFrame(origin, panel),
+      {transform: "none", borderRadius: getComputedStyle(dialogSurface).borderRadius}
+    ], {duration: 510, easing: "cubic-bezier(.22,.8,.24,1)", fill: "both"}),
+    ...[dialogHeader, projectContent].map(node => node.animate([
+      {opacity: 0, offset: 0},
+      {opacity: 0, offset: 0.46},
+      {opacity: 1, offset: 1}
+    ], {duration: 510, fill: "both"}))
+  ];
+}
+
+function closeProject() {
+  if (!dialog.open || closingProject) return;
+  if (!detailAnimations.length || matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    dialog.close();
+    return;
+  }
+
+  closingProject = true;
+  const panel = dialog.querySelector(".dialog-panel").getBoundingClientRect();
+  const target = cardFrame(cardGeometry(projectTrigger), panel);
+  const surfaceStyle = getComputedStyle(dialogSurface);
+  const start = {transform: surfaceStyle.transform, borderRadius: surfaceStyle.borderRadius};
+  const contentNodes = [dialogHeader, projectContent];
+  const contentOpacity = contentNodes.map(node => getComputedStyle(node).opacity);
+  detailAnimations.forEach(animation => animation.cancel());
+  dialog.classList.add("is-closing");
+
+  const duration = 420;
+  detailAnimations = [
+    dialogSurface.animate([start, target], {
+      duration, easing: "cubic-bezier(.3,0,.22,1)", fill: "both"
+    }),
+    dialogSurface.animate([{opacity:1}, {opacity:1, offset:.6}, {opacity:0}], {
+      duration, easing: "ease-in-out", fill: "both"
+    }),
+    ...contentNodes.map((node, index) => node.animate([
+      {opacity:contentOpacity[index]}, {opacity:0}
+    ], {duration:130, easing:"ease-out", fill:"both"}))
+  ];
+  Promise.allSettled(detailAnimations.map(animation => animation.finished)).then(() => dialog.close());
+}
+
+document.querySelector("#close-project").addEventListener("click", closeProject);
+dialog.addEventListener("cancel", event => {
+  event.preventDefault();
+  closeProject();
+});
+dialog.addEventListener("close", () => {
+  for (const animation of detailAnimations) animation.cancel();
+  detailAnimations = [];
+  dialog.classList.remove("is-closing");
+  closingProject = false;
+  projectTrigger?.focus({preventScroll: true});
+});
+
+const experienceList = document.querySelector("#experience-list");
+const experiencePanel = document.querySelector("#experience-panel");
+const experienceButtons = [];
+let selectedExperience = -1;
+
+function showExperience(index) {
+  if (index === selectedExperience) return;
+  selectedExperience = index;
+  const item = portfolio.experience[index];
+  for (const [position, button] of experienceButtons.entries()) {
+    button.setAttribute("aria-pressed", String(position === index));
+  }
+
+  const content = element("div", "experience-content");
+  const header = element("div", "experience-panel-header");
+  const heading = element("div");
+  const role = element("h3", "", item.role);
+  role.id = "experience-role";
+  heading.append(role, element("p", "experience-company", item.company));
+  header.append(heading);
+  if (item.dates) header.append(element("span", "experience-date", item.dates));
+  content.append(header, element("p", "experience-summary", item.summary));
+
+  const details = element("ul", "experience-details");
+  for (const line of item.details) details.append(element("li", "", line));
+  content.append(details);
+  appendExternalLinks(content, item.links);
+  experiencePanel.replaceChildren(content);
+}
+
+for (const [index, item] of portfolio.experience.entries()) {
+  const button = element("button", "experience-choice");
+  button.type = "button";
+  button.setAttribute("aria-controls", "experience-panel");
+  if (item.dates) button.append(element("span", "experience-period", item.dates));
+  button.append(element("strong", "", item.company), element("small", "", item.role));
+  button.addEventListener("click", () => showExperience(index));
+  experienceButtons.push(button);
+  experienceList.append(button);
+}
+if (experienceButtons.length) showExperience(0);
+
+const projectList = document.querySelector("#project-list");
+for (const project of portfolio.projects) {
+  const card = element("button", "project-card project-" + project.id);
+  card.type = "button";
+  const category = element("span", "project-category", project.category);
+  const title = element("strong", "project-title", project.name);
+  const footer = element("span", "project-footer");
+  const arrow = element("span", "project-arrow", "↗");
+  arrow.setAttribute("aria-hidden", "true");
+  footer.append(element("span", "", "查看项目"), arrow);
+  const icon = element("img", "project-icon");
+  icon.src = project.icon;
+  icon.alt = "";
+  icon.width = 256;
+  icon.height = 256;
+  icon.decoding = "async";
+  icon.loading = "lazy";
+  const summary = element("span", "project-summary", project.cardSummary);
+  card.append(category, icon, title, summary, footer);
+  card.addEventListener("click", () => openProject(project.id, card));
+  projectList.append(card);
+}
+
+const capabilityList = document.querySelector("#capability-list");
+let pinnedCapability = null;
+
+for (const [index, item] of portfolio.capabilities.entries()) {
+  const bubble = element("button", "capability-bubble");
+  bubble.type = "button";
+  bubble.setAttribute("aria-pressed", "false");
+  const summary = element("span", "capability-summary", item.summary);
+  summary.id = "capability-summary-" + index;
+  bubble.setAttribute("aria-describedby", summary.id);
+  bubble.append(element("strong", "", item.name), summary);
+  bubble.addEventListener("click", () => {
+    const next = pinnedCapability === bubble ? null : bubble;
+    pinnedCapability?.setAttribute("aria-pressed", "false");
+    next?.setAttribute("aria-pressed", "true");
+    pinnedCapability = next;
+  });
+  capabilityList.append(bubble);
+}
+
+const contacts = document.querySelector("#contact-links");
+const email = element("a", "contact-email", portfolio.email);
+email.href = "mailto:" + portfolio.email;
+email.setAttribute("aria-label", "邮箱 " + portfolio.email);
+const contactActions = element("div", "contact-actions");
+contacts.append(email);
+
+for (const [label, url] of [["GitHub", portfolio.github], ["内容账号", portfolio.creator]]) {
+  if (!url) continue;
+  const link = element("a", "text-button", label + " ↗");
+  link.href = url;
+  contactActions.append(link);
+}
+if (contactActions.childElementCount) contacts.append(contactActions);
+
+if ("IntersectionObserver" in window && !matchMedia("(prefers-reduced-motion: reduce)").matches) {
+  const observer = new IntersectionObserver(entries => {
+    for (const entry of entries) {
+      entry.target.classList.toggle("is-pending", !entry.isIntersecting);
+    }
+  }, {rootMargin: "-80px 0px -110px 0px"});
+
+  // Observe the section's fixed layout box so the animated children cannot retrigger it.
+  for (const section of document.querySelectorAll("main > section")) {
+    const {top, bottom} = section.getBoundingClientRect();
+    section.classList.add("reveal");
+    section.classList.toggle("is-pending", top > window.innerHeight - 110 || bottom < 80);
+    observer.observe(section);
+  }
+}
+</script>
+</body>
+</html>
